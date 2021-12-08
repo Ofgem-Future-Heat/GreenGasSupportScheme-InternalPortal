@@ -1,0 +1,204 @@
+@model InternalPortal.ViewModels.ApplicationDetails
+
+<h2 class="govuk-heading-l"> Application information </h2>
+            
+<h2 class="govuk-heading-m">Plant details</h2>
+            
+<dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Location
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.StageOneDetails.Location
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Connection agreement
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @{
+                await Html.RenderPartialAsync("Components/UploadFileDetails",
+                    new ViewDataDictionary(ViewData)
+                    {
+                        { "Id", Model.StageOneDetails.ConnectionAgreement?.FileId },
+                        { "Name", Model.StageOneDetails.ConnectionAgreement?.FileName },
+                        { "Size", Model.StageOneDetails.ConnectionAgreement?.FileSizeAsString }
+                    }
+                );
+            }
+        </dd>    
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Plant name
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.StageOneDetails.PlantName
+        </dd>    
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Site address
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Html.Raw(Model.StageOneDetails.GetSiteFormattedAddress())
+        </dd>    
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Injection point address
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Html.Raw(Model.StageOneDetails.GetInjectionPointFormattedAddress())
+        </dd>    
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Description of the equipment used to produce biomethane
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.StageOneDetails.EquipmentDescription
+        </dd>    
+    </div>
+</dl>
+
+<h2 class="govuk-heading-m"> Planning permission </h2>
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Planning outcome
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.StageOneDetails.PlanningOutcome
+        </dd>
+    </div>
+
+    @{ if(Model.StageOneDetails.PlanningOutcome == "Yes")
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Planning upload
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @{
+                        await Html.RenderPartialAsync("Components/UploadFileDetails",
+                            new ViewDataDictionary(ViewData)
+                            {
+                                { "Id", Model.StageOneDetails.PlanningUpload?.FileId },
+                                { "Name", Model.StageOneDetails.PlanningUpload?.FileName },
+                                { "Size", Model.StageOneDetails.PlanningUpload?.FileSizeAsString }
+                            }
+                        );
+                    }
+                </dd>
+            </div>
+        }
+        else
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Planning permission statement
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.StageOneDetails.PlanningPermissionStatement
+                </dd>    
+            </div>
+        }
+    }
+</dl>
+
+<h2 class="govuk-heading-m">Production details</h2>
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Volume of biomethane
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.StageOneDetails.BiomethaneVolume
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Volume of eligible biomethane
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.StageOneDetails.EligibleBiomethane
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Expected start date
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.StageOneDetails.ExpectedStartDate.ToString("dd/MM/yyyy")
+        </dd>
+    </div>
+</dl>
+
+
+@if(Model.Status.ToString() != "StageOneSubmitted" && Model.Status.ToString() != "StageOneApproved")
+{
+    <h2 class="govuk-heading-m">ISAE 3000 audit document</h2>
+    
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                ISAE 3000 audit document
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @{
+                    await Html.RenderPartialAsync("Components/UploadFileDetails",
+                        new ViewDataDictionary(ViewData)
+                        {
+                            { "Id", Model.StageTwoDetails.Isae3000?.FileId },
+                            { "Name", Model.StageTwoDetails.Isae3000?.FileName },
+                            { "Size", Model.StageTwoDetails.Isae3000?.FileSizeAsString }
+                        }
+                    );
+                }
+            </dd>
+        </div>
+    </dl>
+    
+    <h2 class="govuk-heading-m">Additional supporting evidence</h2>
+    
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Do you have any additional supporting evidence?
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @(Model.StageTwoDetails.AdditionalSupportingEvidenceDocuments.Any() ? "Yes" : "No")
+            </dd>
+        </div>
+                        
+        @if(Model.StageTwoDetails.AdditionalSupportingEvidenceDocuments.Any())
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Documents uploaded
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @{
+                        foreach (var additionalSupportingEvidence in Model.StageTwoDetails.AdditionalSupportingEvidenceDocuments)
+                        {
+                            await Html.RenderPartialAsync("Components/UploadFileDetails",
+                                new ViewDataDictionary(ViewData)
+                                {
+                                    { "Id", additionalSupportingEvidence?.FileId },
+                                    { "Name", additionalSupportingEvidence?.FileName },
+                                    { "Size", additionalSupportingEvidence?.FileSizeAsString },
+                                    { "Reference", additionalSupportingEvidence?.Reference }
+                                }
+                            );
+                        }
+                    }
+                </dd>
+            </div>  
+        }
+    </dl>
+}

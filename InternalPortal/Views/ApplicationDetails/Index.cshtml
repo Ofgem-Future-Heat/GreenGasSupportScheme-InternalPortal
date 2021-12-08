@@ -1,0 +1,71 @@
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using InternalPortal.Extensions
+@model InternalPortal.ViewModels.ApplicationDetails
+
+@{
+    ViewData["Title"] = "Application Details";
+
+    <a href="/" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">Application @Model.Reference </span>
+        <h1 class="govuk-heading-xl"> @Model.OrganisationDetails.OrganisationName</h1>
+    </div>
+    <div class="govuk-grid-column-one-third">
+    <br>
+        @using (Html.BeginForm("Index", "ApplicationDetails", FormMethod.Post))
+        {
+            <div class="govuk-form-group">
+                <strong class="govuk-tag @Model.Status.GetDisplayTag()">
+                    @Model.Status.GetDisplayName()
+                </strong>
+            <br>
+            <br>
+            <label class="govuk-label" for="sort">
+                    Actions
+                </label>
+            <select class="govuk-select" id="status" name="status">
+                <option selected disabled hidden value="none">Select</option>
+                <option value="StageOneSubmitted">In review</option>
+                <option value="Draft">With applicant</option>
+                <option value="StageOneApproved">Stage one approved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+            </div>
+            <br>
+            <div class="govuk-button-group">
+                @await Html.GovUkButton(new ButtonViewModel { Text = "Save and continue" })
+            </div>
+            @Html.HiddenFor(m => m.ApplicationId)
+        }
+    </div>
+</div>
+
+<div class="govuk-tabs" data-module="govuk-tabs">
+    <ul class="govuk-tabs__list" role="tablist">
+        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
+            <a class="govuk-tabs__tab" href="#application-information" id="tab_application-information" role="tab" aria-controls="application-information" aria-selected="true" tabindex="0">
+                Application information
+            </a>
+        </li>
+        <li class="govuk-tabs__list-item" role="presentation">
+            <a class="govuk-tabs__tab" href="#organisation-information" id="tab_organisation-information" role="tab" aria-controls="organisation-information" aria-selected="false" tabindex="-1">
+                Organisation information
+            </a>
+        </li>
+    </ul>
+    <div class="govuk-tabs__panel" id="application-information" role="tabpanel" aria-labelledby="tab_application-information">
+        @{
+            await Html.RenderPartialAsync("_ApplicationDetails");
+        }
+    </div>
+                            
+    <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="organisation-information" role="tabpanel" aria-labelledby="tab_organisation-information">
+        @{
+            await Html.RenderPartialAsync("_OrganisationDetails");
+        }
+    </div>
+</div>

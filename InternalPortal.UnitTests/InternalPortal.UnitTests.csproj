@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+      <NoWarn>1701,1702,8032</NoWarn>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="6.1.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+        <PackageReference Include="Moq" Version="4.16.1" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+        <PackageReference Include="xunit" Version="2.4.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="3.1.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InternalPortal\InternalPortal.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="ViewModels\" />
+      <None Remove="Extensions\" />
+      <None Remove="Models\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="ViewModels\" />
+      <Folder Include="Extensions\" />
+      <Folder Include="Models\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Reference Include="Ofgem.API.GGSS.Application">
+        <HintPath>..\Dependencies\Ofgem.API.GGSS.Application.dll</HintPath>
+      </Reference>
+      <Reference Include="Ofgem.API.GGSS.Domain">
+        <HintPath>..\Dependencies\Ofgem.API.GGSS.Domain.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+</Project>

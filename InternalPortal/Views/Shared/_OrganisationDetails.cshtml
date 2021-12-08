@@ -1,0 +1,144 @@
+@model InternalPortal.ViewModels.ApplicationDetails
+
+<h2 class="govuk-heading-l">Organisation information</h2>
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Organisation type
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.OrganisationDetails.OrganisationType
+        </dd>
+    </div>
+    @{
+        if (Model.OrganisationDetails.OrganisationType == "Private")
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Company registration number
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.OrganisationDetails.OrganisationRegistrationNumber
+                </dd>
+            </div>
+        }
+    }
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Organisation name
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.OrganisationDetails.OrganisationName
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Organisation address
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Html.Raw(Model.OrganisationDetails.GetFormattedAddress())
+        </dd>
+    </div>
+    @{
+        if (Model.OrganisationDetails.OrganisationType != "Private")
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Legal document
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @{
+                        await Html.RenderPartialAsync("Components/UploadFileDetails",
+                            new ViewDataDictionary(ViewData)
+                            {
+                                { "Id", Model.OrganisationDetails.LegalDocument?.FileId },
+                                { "Name", Model.OrganisationDetails.LegalDocument?.FileName },
+                                { "Size", Model.OrganisationDetails.LegalDocument?.FileSizeAsString }
+                            }
+                        );
+                    }
+                </dd>
+            </div>
+        }
+    }
+
+    <br/>
+
+    <h2 class="govuk-heading-m">Responsible person details</h2>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Authorised signatory name
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.OrganisationDetails.ResponsiblePersonName
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Authorised signatory Phone Number
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.OrganisationDetails.ResponsiblePersonPhoneNumber
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Authorised signatory email
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.OrganisationDetails.ResponsiblePersonEmail
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Photographic identification
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @{
+                await Html.RenderPartialAsync("Components/UploadFileDetails",
+                    new ViewDataDictionary(ViewData)
+                    {
+                        { "Id", Model.OrganisationDetails.PhotoId?.FileId },
+                        { "Name", Model.OrganisationDetails.PhotoId?.FileName },
+                        { "Size", Model.OrganisationDetails.PhotoId?.FileSizeAsString }
+                    }
+                );
+            }
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Council tax or utility bill
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @{
+                await Html.RenderPartialAsync("Components/UploadFileDetails",
+                    new ViewDataDictionary(ViewData)
+                    {
+                        { "Id", Model.OrganisationDetails.ProofOfAddress?.FileId },
+                        { "Name", Model.OrganisationDetails.ProofOfAddress?.FileName },
+                        { "Size", Model.OrganisationDetails.ProofOfAddress?.FileSizeAsString }
+                    }
+                );
+            }
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Letter of authorisation
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @{
+                await Html.RenderPartialAsync("Components/UploadFileDetails",
+                    new ViewDataDictionary(ViewData)
+                    {
+                        { "Id", Model.OrganisationDetails.LetterOfAuthority?.FileId },
+                        { "Name", Model.OrganisationDetails.LetterOfAuthority?.FileName },
+                        { "Size", Model.OrganisationDetails.LetterOfAuthority?.FileSizeAsString }
+                    }
+                );
+            }
+        </dd>
+    </div>
+</dl>

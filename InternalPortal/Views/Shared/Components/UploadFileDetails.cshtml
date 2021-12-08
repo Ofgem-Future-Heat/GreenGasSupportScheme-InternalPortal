@@ -1,0 +1,9 @@
+<p>
+    @(ViewData["Reference"] != null ? $"{ViewData["Reference"].ToString()}," : "")
+  
+    <a href="/application-document/download/@ViewData["Id"]?.ToString()">
+        @ViewData["Name"]?.ToString(), 
+    </a> 
+    
+    (@ViewData["Size"]?.ToString())
+</p>
