@@ -13,7 +13,6 @@
         <PackageReference Include="FluentAssertions" Version="6.1.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
         <PackageReference Include="Moq" Version="4.16.1" />
-        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -38,13 +37,5 @@
       <Folder Include="ViewModels\" />
       <Folder Include="Extensions\" />
       <Folder Include="Models\" />
-    </ItemGroup>
-    <ItemGroup>
-      <Reference Include="Ofgem.API.GGSS.Application">
-        <HintPath>..\Dependencies\Ofgem.API.GGSS.Application.dll</HintPath>
-      </Reference>
-      <Reference Include="Ofgem.API.GGSS.Domain">
-        <HintPath>..\Dependencies\Ofgem.API.GGSS.Domain.dll</HintPath>
-      </Reference>
     </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using InternalPortal.Services;
+using InternalPortal.Extensions;
 using InternalPortal.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,20 +27,25 @@ namespace InternalPortal.Controllers
                 OrganisationId = organisationId
             }, CancellationToken.None);
 
-            var model = new OrganisationDetails()
+            var model = new ApplicationDetails()
             {
-                OrganisationType = organisationDetails.OrganisationType,
-                OrganisationName = organisationDetails.OrganisationName,
-                OrganisationStatus = organisationDetails.OrganisationStatus,
-                OrganisationRegistrationNumber = organisationDetails.OrganisationRegistrationNumber,
-                OrganisationAddress = organisationDetails.OrganisationAddress,
-                ResponsiblePersonName = organisationDetails.ResponsiblePersonName,
-                ResponsiblePersonPhoneNumber = organisationDetails.ResponsiblePersonPhoneNumber,
-                ResponsiblePersonEmail = organisationDetails.ResponsiblePersonEmail,
-                LegalDocument = organisationDetails.LegalDocument,
-                PhotoId = organisationDetails.PhotoId,
-                LetterOfAuthority = organisationDetails.LetterOfAuthority,
-                ProofOfAddress = organisationDetails.ProofOfAddress
+                OrganisationDetails = new OrganisationDetails()
+                {
+                    OrganisationType = organisationDetails.OrganisationType,
+                    OrganisationName = organisationDetails.OrganisationName,
+                    OrganisationStatus = string.IsNullOrEmpty(organisationDetails.OrganisationStatus) ? "Not verified" : organisationDetails.OrganisationStatus,
+                    OrganisationRegistrationNumber = organisationDetails.OrganisationRegistrationNumber,
+                    OrganisationAddress = organisationDetails.OrganisationAddress,
+                    OrganisationUsers = organisationDetails.OrganisationUsers,
+                    ResponsiblePersonName = organisationDetails.ResponsiblePersonName,
+                    ResponsiblePersonSurname = organisationDetails.ResponsiblePersonSurname,
+                    ResponsiblePersonPhoneNumber = organisationDetails.ResponsiblePersonPhoneNumber,
+                    ResponsiblePersonEmail = organisationDetails.ResponsiblePersonEmail,
+                    LegalDocument = organisationDetails.LegalDocument,
+                    PhotoId = organisationDetails.PhotoId,
+                    LetterOfAuthority = organisationDetails.LetterOfAuthority,
+                    ProofOfAddress = organisationDetails.ProofOfAddress   
+                }
             };
             return View("OrganisationDetails", model);
         }
@@ -51,7 +57,8 @@ namespace InternalPortal.Controllers
             await _updateOrganisationStatusService.UpdateStatus(new UpdateOrganisationStatus()
             {
                 OrganisationId = organisationId,
-                NewStatus = organisationStatus
+                NewStatus = organisationStatus,
+                UserId = User.GetUserId()
             });
 
             return RedirectToAction("OrganisationDetails", new { organisationId });

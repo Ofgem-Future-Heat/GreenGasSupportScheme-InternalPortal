@@ -1,16 +1,64 @@
 @model InternalPortal.ViewModels.ApplicationDetails
 
 <h2 class="govuk-heading-l"> Application information </h2>
+
+<h2 class="govuk-heading-m">Submitted</h2>
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Stage 1
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.StageOneDetails.FirstSubmissionDateTime
+        </dd>    
+    </div>
+    @if(!String.IsNullOrEmpty(Model.StageTwoDetails.FirstSubmissionDateTime))
+    {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Stage 2
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.StageTwoDetails.FirstSubmissionDateTime
+            </dd>    
+        </div>
+    }
+</dl>
             
 <h2 class="govuk-heading-m">Plant details</h2>
             
 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
+            Plant name
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.StageOneDetails.PlantName
+        </dd>    
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
             Location
         </dt>
         <dd class="govuk-summary-list__value">
             @Model.StageOneDetails.Location
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Latitude and longitude of the anaerobic digestion plant
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.StageOneDetails.LatitudeLongitudeAnaerobic.Latitude, @Model.StageOneDetails.LatitudeLongitudeAnaerobic.Longitude
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Latitude and longitude of the injection point
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.StageOneDetails.LatitudeLongitudeInjection.Latitude, @Model.StageOneDetails.LatitudeLongitudeInjection.Longitude
         </dd>
     </div>
     <div class="govuk-summary-list__row">
@@ -32,28 +80,33 @@
     </div>
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-            Plant name
+            Postcode provided
         </dt>
         <dd class="govuk-summary-list__value">
-            @Model.StageOneDetails.PlantName
-        </dd>    
+            @Model.StageOneDetails.HasPostcode
+        </dd>
     </div>
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            Site address
-        </dt>
-        <dd class="govuk-summary-list__value">
-            @Html.Raw(Model.StageOneDetails.GetSiteFormattedAddress())
-        </dd>    
-    </div>
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            Injection point address
-        </dt>
-        <dd class="govuk-summary-list__value">
-            @Html.Raw(Model.StageOneDetails.GetInjectionPointFormattedAddress())
-        </dd>    
-    </div>
+    
+    @if(Model.StageOneDetails.HasPostcode == "Yes")
+    {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Site address
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Html.Raw(Model.StageOneDetails.GetSiteFormattedAddress())
+            </dd>    
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Injection point address
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Html.Raw(Model.StageOneDetails.GetInjectionPointFormattedAddress())
+            </dd>    
+        </div>    
+    }
+
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
             Description of the equipment used to produce biomethane

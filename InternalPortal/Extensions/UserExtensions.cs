@@ -40,7 +40,7 @@ namespace InternalPortal.Extensions
         {
             if (IsAuthenticated(user))
             {
-                Id = Guid.Parse(user.Claims.SingleOrDefault(claim => claim.Type == "sub")?.Value ?? "00000000-0000-0000-0000-000000000000");
+                Id = Guid.Parse(user.Claims.SingleOrDefault(claim => claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ?? "00000000-0000-0000-0000-000000000000");
                 Name = user.Claims.Single(claim => claim.Type == "name").Value;
             }
             else

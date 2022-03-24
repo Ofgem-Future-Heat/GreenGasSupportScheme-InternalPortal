@@ -1,0 +1,22 @@
+@model List<InternalPortal.ViewModels.Organisation>
+
+<tbody class="govuk-table__body">
+@foreach (var organisation in Model)
+{
+    <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+            <a href="/organisation-details/@organisation.Id">
+                @organisation.Name
+            </a>
+        </td>
+        <td class="govuk-table__cell">
+            @organisation.LastModified
+        </td>
+        <td class="govuk-table__cell">
+            <strong class="govuk-tag govuk-tag--grey">
+                @organisation.Status
+            </strong>
+        </td>
+    </tr>
+}
+</tbody>

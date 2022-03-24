@@ -1,6 +1,7 @@
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using InternalPortal.Extensions
+@using InternalPortal.Helpers
 @model InternalPortal.ViewModels.ApplicationDetails
 
 @{
@@ -11,8 +12,12 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <span class="govuk-caption-xl">Application @Model.Reference </span>
-        <h1 class="govuk-heading-xl"> @Model.OrganisationDetails.OrganisationName</h1>
+        <span class="govuk-caption-xl">
+            Application @Model.Reference
+        </span>
+        <h1 class="govuk-heading-xl">
+            @Model.OrganisationDetails.OrganisationName
+        </h1>
     </div>
     <div class="govuk-grid-column-one-third">
     <br>
@@ -22,18 +27,19 @@
                 <strong class="govuk-tag @Model.Status.GetDisplayTag()">
                     @Model.Status.GetDisplayName()
                 </strong>
-            <br>
-            <br>
-            <label class="govuk-label" for="sort">
+                <br>
+                <br>
+                <label class="govuk-label" for="sort">
                     Actions
                 </label>
-            <select class="govuk-select" id="status" name="status">
-                <option selected disabled hidden value="none">Select</option>
-                <option value="StageOneSubmitted">In review</option>
-                <option value="Draft">With applicant</option>
-                <option value="StageOneApproved">Stage one approved</option>
-                <option value="Rejected">Rejected</option>
-            </select>
+                <select class="govuk-select" id="status" name="status">
+                    <!option disabled hidden value="none">Select</!option>
+                    <!option value="@Model.Status.ToString()" selected>@Model.Status.GetDisplayName()</!option>
+                    @foreach (var possibleStatus in Model.Status.GetTransitionableStatuses())
+                    {
+                        <!option value="@possibleStatus.ToString()">@possibleStatus.GetDisplayName()</!option>
+                    }
+                </select>
             </div>
             <br>
             <div class="govuk-button-group">

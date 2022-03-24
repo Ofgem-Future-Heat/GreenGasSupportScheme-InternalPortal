@@ -9,9 +9,9 @@ namespace InternalPortal.ViewModels
         private readonly IGetOrganisationsService _getOrganisationsService;
         private readonly IGetApplicationsService _getApplicationsService;
 
-        public Organisations Organisations { get; internal set; }
+        public Organisations Organisations { get; private set; }
 
-        public Applications Applications { get; internal set; }
+        public Applications Applications { get; private set; }
 
         public Dashboard(
             IGetOrganisationsService getOrganisationsService,
@@ -23,9 +23,9 @@ namespace InternalPortal.ViewModels
 
         public async Task Initialise(CancellationToken token)
         {
-            Organisations = await new Organisations().Get(_getOrganisationsService, token);
+            Organisations = await Organisations.Get(_getOrganisationsService, token);
 
-            Applications = await new Applications().Get(_getApplicationsService, token);
+            Applications = await Applications.Get(_getApplicationsService, token);
         }
     }
 }

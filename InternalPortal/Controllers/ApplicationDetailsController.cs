@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ofgem.API.GGSS.Domain.Enums;
 using Ofgem.API.GGSS.Domain.Models;
 using Ofgem.API.GGSS.Domain.ModelValues;
+using Ofgem.API.GGSS.Domain.ModelValues.StageTwo;
 using Ofgem.API.GGSS.Domain.Responses.Applications;
 
 namespace InternalPortal.Controllers
@@ -38,11 +39,21 @@ namespace InternalPortal.Controllers
                 ApplicationId = applicationId
             }, CancellationToken.None);
 
+            var stageOneApplication = application.Application.StageOne;
+
+            var stageTwoApplication = application.Application.StageTwo;
+
+            var hasPostcode = String.IsNullOrEmpty(stageOneApplication.TellUsAboutYourSite.HasPostcode)
+                ? "Yes"
+                : stageOneApplication.TellUsAboutYourSite.HasPostcode;
+
+            var stageTwoHasFirstSubmissionDateTime = !String.IsNullOrEmpty(stageTwoApplication.FirstSubmissionDateTime);
+
             var organisation = await _getOrganisationDetailsService.Get(new GetOrganisationDetailsRequest()
             {
                 OrganisationId = application.OrganisationId.ToString()
             }, CancellationToken.None);
-            
+
             var applicationDetails = new ApplicationDetails()
             {
                 ApplicationId = applicationId,
@@ -50,23 +61,29 @@ namespace InternalPortal.Controllers
                 Status = application.Application.Status,
                 StageOneDetails = new StageOneDetails()
                 {
-                    Location = application.Application.StageOne.TellUsAboutYourSite.PlantLocation,
-                    PlantName = application.Application.StageOne.TellUsAboutYourSite.PlantName,
-                    ConnectionAgreement = application.Application.StageOne.TellUsAboutYourSite.CapacityCheckDocument,
-                    SiteAddress = application.Application.StageOne.TellUsAboutYourSite.PlantAddress,
-                    InjectionPointAddress = application.Application.StageOne.TellUsAboutYourSite.InjectionPointAddress,
-                    EquipmentDescription = application.Application.StageOne.TellUsAboutYourSite.EquipmentDescription,
-                    PlanningOutcome = application.Application.StageOne.ProvidePlanningPermission.PlanningPermissionOutcome,
-                    PlanningUpload = application.Application.StageOne.ProvidePlanningPermission.PlanningPermissionDocument,
-                    PlanningPermissionStatement = application.Application.StageOne.ProvidePlanningPermission.PlanningPermissionStatement,
-                    BiomethaneVolume = application.Application.StageOne.ProductionDetails.MaximumInitialCapacity,
-                    EligibleBiomethane = application.Application.StageOne.ProductionDetails.EligibleBiomethane,
-                    ExpectedStartDate = application.Application.StageOne.ProductionDetails.InjectionStartDate,
+                    Location = stageOneApplication.TellUsAboutYourSite.PlantLocation,
+                    PlantName = stageOneApplication.TellUsAboutYourSite.PlantName,
+                    HasPostcode = hasPostcode,
+                    LatitudeLongitudeAnaerobic = stageOneApplication.TellUsAboutYourSite.LatitudeLongitudeAnaerobic,
+                    LatitudeLongitudeInjection = stageOneApplication.TellUsAboutYourSite.LatitudeLongitudeInjection,
+                    ConnectionAgreement = stageOneApplication.TellUsAboutYourSite.CapacityCheckDocument,
+                    SiteAddress = stageOneApplication.TellUsAboutYourSite.PlantAddress,
+                    InjectionPointAddress = stageOneApplication.TellUsAboutYourSite.InjectionPointAddress,
+                    EquipmentDescription = stageOneApplication.TellUsAboutYourSite.EquipmentDescription,
+                    PlanningOutcome = stageOneApplication.ProvidePlanningPermission.PlanningPermissionOutcome,
+                    PlanningUpload = stageOneApplication.ProvidePlanningPermission.PlanningPermissionDocument,
+                    PlanningPermissionStatement = stageOneApplication.ProvidePlanningPermission.PlanningPermissionStatement,
+                    BiomethaneVolume = stageOneApplication.ProductionDetails.MaximumInitialCapacity,
+                    EligibleBiomethane = stageOneApplication.ProductionDetails.EligibleBiomethane,
+                    ExpectedStartDate = stageOneApplication.ProductionDetails.InjectionStartDate,
+                    FirstSubmissionDateTime = stageOneApplication.FirstSubmissionDateTime.ToOfgemShortDate()
                 },
                 StageTwoDetails = new StageTwoDetails()
                 {
-                    Isae3000 = application.Application.StageTwo.Isae3000.Document,
-                    AdditionalSupportingEvidenceDocuments = application.Application.StageTwo.AdditionalSupportingEvidence.AdditionalSupportingEvidenceDocuments
+                    Isae3000 = stageTwoApplication.Isae3000.Document,
+                    AdditionalSupportingEvidenceDocuments = stageTwoApplication.AdditionalSupportingEvidence.AdditionalSupportingEvidenceDocuments,
+                    FirstSubmissionDateTime = stageTwoHasFirstSubmissionDateTime ? stageTwoApplication.FirstSubmissionDateTime.ToOfgemShortDate() : ""
+
                 },
                 OrganisationDetails = new OrganisationDetails()
                 {
@@ -75,7 +92,9 @@ namespace InternalPortal.Controllers
                     OrganisationStatus = organisation.OrganisationStatus,
                     OrganisationRegistrationNumber = organisation.OrganisationRegistrationNumber,
                     OrganisationAddress = organisation.OrganisationAddress,
+                    OrganisationUsers = organisation.OrganisationUsers,
                     ResponsiblePersonName = organisation.ResponsiblePersonName,
+                    ResponsiblePersonSurname = organisation.ResponsiblePersonSurname,
                     ResponsiblePersonPhoneNumber = organisation.ResponsiblePersonPhoneNumber,
                     ResponsiblePersonEmail = organisation.ResponsiblePersonEmail,
                     LegalDocument = organisation.LegalDocument,
@@ -97,12 +116,13 @@ namespace InternalPortal.Controllers
                 ApplicationId = applicationId
             }, CancellationToken.None);
             
-            Enum.TryParse(status, out ApplicationStatus newStatus);
-            application.Application.Status = newStatus;
+            application.Application.Status = Enum.Parse<ApplicationStatus>(status);
 
-            if (status == "Draft")
+            if (application.Application.Status == ApplicationStatus.StageOneWithApplicant ||
+                application.Application.Status == ApplicationStatus.StageTwoWithApplicant ||
+                application.Application.Status == ApplicationStatus.StageThreeWithApplicant)
             {
-                SetApplicationStatusToComplete(application);
+                SetApplicationStatusesToComplete(application);
             }
 
             var request = new UpdateApplicationRequest
@@ -111,16 +131,25 @@ namespace InternalPortal.Controllers
                 Application = application.Application,
                 UserId = User.GetUserId()
             };
-            
+
             await _updateApplicationStatusService.Update(request, CancellationToken.None);
+
             return RedirectToAction("Index");
         }
 
-        private static void SetApplicationStatusToComplete(RetrieveApplicationResponse application)
+        private static void SetApplicationStatusesToComplete(RetrieveApplicationResponse application)
         {
-            application.Application.StageOne.TellUsAboutYourSite.Status = "Completed";
-            application.Application.StageOne.ProvidePlanningPermission.Status = "Completed";
-            application.Application.StageOne.ProductionDetails.Status = "Completed";
+            if (application.Application.StageTwo.Isae3000.Status == "Submitted")
+            {
+                application.Application.StageTwo.Isae3000.Status = "Completed";
+                application.Application.StageTwo.AdditionalSupportingEvidence.Status = "Completed";
+            }
+            else
+            {
+                application.Application.StageOne.TellUsAboutYourSite.Status = "Completed";
+                application.Application.StageOne.ProvidePlanningPermission.Status = "Completed";
+                application.Application.StageOne.ProductionDetails.Status = "Completed";
+            }
         }
     }
 }

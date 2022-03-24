@@ -53,12 +53,14 @@ namespace InternalPortal.Services
         public string OrganisationRegistrationNumber { get; set; }
         public AddressModel OrganisationAddress { get; set; }
         public string ResponsiblePersonName { get; set; }
+        public string ResponsiblePersonSurname { get; set; }
         public string ResponsiblePersonPhoneNumber { get; set; }
         public string ResponsiblePersonEmail { get; set; }
         public DocumentValue PhotoId { get; set; }
         public DocumentValue ProofOfAddress { get; set; }
         public DocumentValue LetterOfAuthority { get; set; }
         public DocumentValue LegalDocument { get; set; }
+        public List<UserValue> OrganisationUsers { get; set; }
     }
     
     public class GetOrganisationDetailsRequest

@@ -7,12 +7,12 @@ namespace InternalPortal.ViewModels
 {
     public class OrganisationDetails
     {
-        public List<string> Errors { get; set; } = new List<string>();
         public string OrganisationType { get; set; }
         public string OrganisationName { get; set; }
         public string OrganisationRegistrationNumber { get; set; }
         public AddressModel OrganisationAddress { get; set; }
         public string ResponsiblePersonName { get; set; }
+        public string ResponsiblePersonSurname { get; set; }
         public string ResponsiblePersonPhoneNumber { get; set; }
         public string ResponsiblePersonEmail { get; set; }
         public DocumentValue PhotoId { get; set; }
@@ -20,6 +20,16 @@ namespace InternalPortal.ViewModels
         public DocumentValue LetterOfAuthority { get; set; }
         public DocumentValue LegalDocument { get; set; }
         public string OrganisationStatus { get; set; }
+        public List<UserValue> OrganisationUsers { get; set; }
+
+        public string GetFormattedFullName()
+        {
+            var stringBuilder = new StringBuilder();
+            
+            stringBuilder.Append($"{ResponsiblePersonName} {ResponsiblePersonSurname}");
+            
+            return stringBuilder.ToString();
+        }
 
         public string GetFormattedAddress()
         {

@@ -7,5 +7,6 @@ namespace InternalPortal.ViewModels
     {
         public DocumentValue Isae3000 { get; set; }
         public List<DocumentValue> AdditionalSupportingEvidenceDocuments { get; set; }
+        public string FirstSubmissionDateTime { get; set; }
     }
 }

@@ -26,8 +26,15 @@ namespace InternalPortal.Extensions
             {
                 ApplicationStatus.StageOneSubmitted => "govuk-tag--blue",
                 ApplicationStatus.Draft => "govuk-tag--yellow",
+                ApplicationStatus.WithApplicant => "govuk-tag--yellow",
+                ApplicationStatus.StageOneWithApplicant => "govuk-tag--yellow",
+                ApplicationStatus.StageTwoWithApplicant => "govuk-tag--yellow",
                 ApplicationStatus.Rejected => "govuk-tag--red",
+                ApplicationStatus.StageOneRejected => "govuk-tag--red",
+                ApplicationStatus.StageTwoRejected => "govuk-tag--red",
                 ApplicationStatus.StageOneApproved => "govuk-tag--green",
+                ApplicationStatus.StageTwoApproved => "govuk-tag--green",
+                ApplicationStatus.StageThreeApproved => "govuk-tag--green",
                 _ => "govuk-tag--blue",
             };
         }

@@ -32,7 +32,7 @@ namespace InternalPortal.Services
             {
                 Method = new HttpMethod("PATCH"),
                 RequestUri = new Uri($"{_client.BaseAddress}Organisation/{request.OrganisationId}/details"),
-                Content = new StringContent(JsonConvert.SerializeObject(new { OrganisationStatus = request.NewStatus }), Encoding.Default, "application/json"),
+                Content = new StringContent(JsonConvert.SerializeObject(new { OrganisationStatus = request.NewStatus, UserId = request.UserId }), Encoding.Default, "application/json"),
             };
 
             var result = await _client.SendAsync(httpRequest);
@@ -50,6 +50,7 @@ namespace InternalPortal.Services
     {
         public string OrganisationId { get; set; }
         public string NewStatus { get; set; }
+        public string UserId { get; set; }
     }
 
     public class UpdateOrganisationStatusResponse

@@ -1,5 +1,11 @@
 @model InternalPortal.ViewModels.ApplicationDetails
 
+@{
+    ViewData["Title"] = "Organisation Details";
+
+    var organisationType = Model.OrganisationDetails.OrganisationType == "Private" ? "Private limited company" : "Other type of organisation";
+}
+
 <h2 class="govuk-heading-l">Organisation information</h2>
 
 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
@@ -8,7 +14,7 @@
             Organisation type
         </dt>
         <dd class="govuk-summary-list__value">
-            @Model.OrganisationDetails.OrganisationType
+            @organisationType
         </dd>
     </div>
     @{
@@ -62,16 +68,16 @@
             </div>
         }
     }
-
+</dl>
     <br/>
-
-    <h2 class="govuk-heading-m">Responsible person details</h2>
+<h2 class="govuk-heading-m">Authorised signatory details</h2>
+<dl class="govuk-summary-list govuk-!-margin-bottom-9">
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
             Authorised signatory name
         </dt>
         <dd class="govuk-summary-list__value">
-            @Model.OrganisationDetails.ResponsiblePersonName
+            @Html.Raw(Model.OrganisationDetails.GetFormattedFullName())
         </dd>
     </div>
     <div class="govuk-summary-list__row">
@@ -141,4 +147,31 @@
             }
         </dd>
     </div>
+</dl>
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <h2 class="govuk-heading-m"> Members </h2>
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Users</th>
+                <th scope="col" class="govuk-table__header">Role</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">@Html.Raw(Model.OrganisationDetails.GetFormattedFullName())</th>
+                <td class="govuk-table__cell">Authorised signatory</td>
+            </tr>
+            @{
+                @foreach (var user in Model.OrganisationDetails.OrganisationUsers)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">@user.Name @user.Surname</th>
+                        <td class="govuk-table__cell">Admin user</td>
+                    </tr>       
+                }
+            }
+        </tbody>
+    </table>
 </dl>

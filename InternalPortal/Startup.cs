@@ -1,3 +1,4 @@
+using System;
 using InternalPortal.Extensions;
 using InternalPortal.Models;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -49,7 +50,7 @@ namespace InternalPortal
                 options.ResponseMode = OpenIdConnectResponseMode.FormPost;
             });
 
-            if (CustomAccessPolicy.IsRestricted(Environment))
+            if (CustomAccessPolicy.IsRestricted(Configuration.GetValue<bool>("NoAuthentication")))
             {
                 services.AddControllersWithViews(options =>
                 {

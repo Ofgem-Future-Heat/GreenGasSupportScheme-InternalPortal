@@ -33,7 +33,7 @@ namespace InternalPortal.UnitTests.ViewModels
                 .Setup(a => a.Get(It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(response));
 
-            var model = await applications.Get(getApplications.Object, CancellationToken.None);
+            var model = await Applications.Get(getApplications.Object, CancellationToken.None);
 
             model.StageOneSubmitted.Should().NotBeNullOrEmpty();
             model.StageOneSubmitted.Count.Should().Be(1);

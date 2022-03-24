@@ -9,26 +9,37 @@ namespace InternalPortal.ViewModels
 {
     public class Organisations
     {
-        public List<Organisation> List { get; internal set; }
+        public List<Organisation> Verified { get; private set; }
+        public List<Organisation> Unverified { get; private set; }
 
-        public async Task<Organisations> Get(IGetOrganisationsService getOrganisationsService, CancellationToken token)
+        public static async Task<Organisations> Get(IGetOrganisationsService getOrganisationsService, CancellationToken token)
         {
-            var result = new Organisations() { List = new List<Organisation>() };
+            var result = new Organisations { };
 
             var organisations = await getOrganisationsService.Get(token);
 
-            if (!organisations.Errors.Any())
+            if (organisations.Errors.Any())
             {
-                result.List = organisations.Organisations
-                    .Select(o => new Organisation()
-                    {
-                        Id = o.OrganisationId,
-                        Name = o.OrganisationName,
-                        Status = o.OrganisationStatus,
-                        LastModified = o.LastModified.ToOfgemShortDate()
-                    })
-                    .ToList();
+                return result;
             }
+
+            var list = organisations.Organisations
+                .Select(o => new Organisation()
+                {
+                    Id = o.OrganisationId,
+                    Name = string.IsNullOrEmpty(o.OrganisationName) ? "Unnamed" : o.OrganisationName,
+                    Status = string.IsNullOrEmpty(o.OrganisationStatus) ? "Not verified" : o.OrganisationStatus,
+                    LastModified = o.LastModified.ToOfgemShortDate()
+                })
+                .ToList();
+
+            result.Verified = list
+                .Where(o => o.Status.ToLower() == "verified")
+                .ToList();
+
+            result.Unverified = list
+                .Where(o => o.Status.ToLower() == "not verified")
+                .ToList();
 
             return result;
         }

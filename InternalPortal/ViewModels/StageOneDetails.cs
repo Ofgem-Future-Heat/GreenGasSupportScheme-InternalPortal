@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using Ofgem.API.GGSS.Domain.Models;
 using Ofgem.API.GGSS.Domain.ModelValues;
+using Ofgem.API.GGSS.Domain.ModelValues.StageOne;
 
 namespace InternalPortal.ViewModels
 {
@@ -9,6 +10,9 @@ namespace InternalPortal.ViewModels
     {
         public string Location { get; set; }
         public string PlantName { get; set; }
+        public LatitudeLongitudeValue LatitudeLongitudeAnaerobic { get; set; }
+        public LatitudeLongitudeValue LatitudeLongitudeInjection { get; set; }
+        public string HasPostcode { get; set; } = "Yes";
         public DocumentValue ConnectionAgreement { get; set; }
         public AddressModel SiteAddress { get; set; }
         public AddressModel InjectionPointAddress { get; set; }
@@ -19,6 +23,7 @@ namespace InternalPortal.ViewModels
         public string BiomethaneVolume { get; set; }
         public string EligibleBiomethane { get; set; }
         public DateTime ExpectedStartDate { get; set; }
+        public string FirstSubmissionDateTime { get; set; }
         public string GetSiteFormattedAddress()
         {
             if(SiteAddress == null)

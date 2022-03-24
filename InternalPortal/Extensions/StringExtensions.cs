@@ -13,7 +13,12 @@ namespace InternalPortal.Extensions
                 "Stage Two Approved" => "govuk-tag--green",
                 "Stage Three Approved" => "govuk-tag--green",
                 "Draft" => "govuk-tag--yellow",
+                "With Applicant" => "govuk-tag--yellow",
+                "Stage One With Applicant" => "govuk-tag--yellow",
+                "Stage Two With Applicant" => "govuk-tag--yellow",
                 "Rejected" => "govuk-tag--red",
+                "Stage One Rejected" => "govuk-tag--red",
+                "Stage Two Rejected" => "govuk-tag--red",
                 _ => "govuk-tag--blue",
             };
         }

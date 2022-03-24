@@ -30,86 +30,20 @@ namespace InternalPortal.UnitTests.Models
             _mockUser.Setup(u => u.Identity.IsAuthenticated).Returns(true);
         }
 
-        [Fact]
-        public void ShouldReturnFalseWhenEnvironmentIsDevelopment()
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        public void ShouldReturnTheOppositeOfTheValuePassed(bool noAuthentication, bool expected)
         {
-            var environment = new Mock<IWebHostEnvironment>();
+            var result = CustomAccessPolicy.IsRestricted(noAuthentication);
 
-            environment
-                .Setup(e => e.EnvironmentName)
-                .Returns("Development");
-
-            var result = CustomAccessPolicy.IsRestricted(environment.Object);
-
-            result.Should().Be(false);
-        }
-
-        [Fact]
-        public void ShouldReturnFalseWhenEnvironmentIsDocker()
-        {
-            var environment = new Mock<IWebHostEnvironment>();
-
-            environment
-                .Setup(e => e.EnvironmentName)
-                .Returns("Docker");
-
-            var result = CustomAccessPolicy.IsRestricted(environment.Object);
-
-            result.Should().Be(false);
-        }
-
-        [Fact]
-        public void ShouldReturnFalseWhenEnvironmentIsFDEV()
-        {
-            var environment = new Mock<IWebHostEnvironment>();
-
-            environment
-                .Setup(e => e.EnvironmentName)
-                .Returns("FDEV");
-
-            var result = CustomAccessPolicy.IsRestricted(environment.Object);
-
-            result.Should().Be(false);
-        }
-
-        [Fact(Skip = "To be reinstated after sprint review")]
-        public void ShouldReturnTrueWhenEnvironmentIsASIT()
-        {
-            var environment = new Mock<IWebHostEnvironment>();
-
-            environment
-                .Setup(e => e.EnvironmentName)
-                .Returns("ASIT");
-
-            var result = CustomAccessPolicy.IsRestricted(environment.Object);
-
-            result.Should().Be(true);
-        }
-
-
-        [Fact(Skip = "To be reinstated after sprint review")]
-        public void ShouldReturnTrueWhenEnvironmentIsNotRecognised()
-        {
-            var environment = new Mock<IWebHostEnvironment>();
-
-            environment
-                .Setup(e => e.EnvironmentName)
-                .Returns("not-recognised");
-
-            var result = CustomAccessPolicy.IsRestricted(environment.Object);
-
-            result.Should().Be(true);
+            result.Should().Be(expected);
         }
 
         [Fact]
         public void ShouldReturnFalseWhenUserIsNotInList()
         {
-            _mockUser.SetupGet(u => u.Claims)
-                .Returns(new List<Claim> {
-                                new Claim(ClaimTypes.NameIdentifier, "326fa974-7c05-4b37-a8e4-6d5fe6deb63b"),
-                                new Claim("name", "James Anderson"),
-                                new Claim("identityprovider", "326fa974-7c05-4b37-a8e4-6d5fe6deb63b")
-                }.AsEnumerable());
+            _mockUser.SetupGet(u => u.Identity.Name).Returns("James.Anderson@ofgem.gov.uk");
 
             var context = new AuthorizationHandlerContext(_requirements, _mockUser.Object, null);
 
@@ -119,21 +53,25 @@ namespace InternalPortal.UnitTests.Models
         }
 
         [Theory]
-        [InlineData("Charlotte", "Baker")]
-        [InlineData("Paul", "Russell")]
-        [InlineData("Peter", "McKechnie")]
-        [InlineData("Michael", "McGuire")]
-        [InlineData("Gillian", "Roberts")]
-        [InlineData("Brian", "Morris")]
-        [InlineData("Brighe", "McColl")]
-        [InlineData("James", "Johnston")]
-        public void ShouldReturnTrueWhenUserIsInList(string firstName, string lastName)
+        [InlineData("Charlotte.Baker@ofgem.gov.uk")]
+        [InlineData("Brighe.McColl@ofgem.gov.uk")]
+        [InlineData("Peter.McKechnie@ofgem.gov.uk")]
+        [InlineData("Michael.McGuire@ofgem.gov.uk")]
+        [InlineData("James.Johnston@ofgem.gov.uk")]
+        [InlineData("Brian.Morris@ofgem.gov.uk")]
+        [InlineData("Claris.Ankunda@ofgem.gov.uk")]
+        [InlineData("Andrew.Connell@ofgem.gov.uk")]
+        [InlineData("Paul.McDonald@ofgem.gov.uk")]
+        [InlineData("Andre.Cardozo@ofgem.gov.uk")]
+        [InlineData("paul.russell@ofgem.gov.uk")]
+        [InlineData("calum.ruddock@ofgem.gov.uk")]
+        [InlineData("jamie.ramsay@ofgem.gov.uk")]
+        [InlineData("fiona.mackinnon@ofgem.gov.uk")]
+        [InlineData("kerry.fatherley@ofgem.gov.uk")]
+        [InlineData("Alistair.Crighton@ofgem.gov.uk")]
+        public void ShouldReturnTrueWhenUserIsInList(string name)
         {
-            _mockUser.SetupGet(u => u.Claims)
-                .Returns(new List<Claim> {
-                                new Claim(ClaimTypes.NameIdentifier, "326fa974-7c05-4b37-a8e4-6d5fe6deb63b"),
-                                new Claim("name", $"{firstName} {lastName}")
-                }.AsEnumerable());
+            _mockUser.SetupGet(u => u.Identity.Name).Returns(name);
 
             var context = new AuthorizationHandlerContext(_requirements, _mockUser.Object, null);
 

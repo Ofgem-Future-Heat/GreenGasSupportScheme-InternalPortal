@@ -1,5 +1,6 @@
 ﻿using System;
 using InternalPortal.Services;
+using Ofgem.API.GGSS.Domain.Enums;
 using Ofgem.API.GGSS.Domain.Models;
 using Ofgem.API.GGSS.Domain.ModelValues;
 
@@ -9,7 +10,7 @@ namespace InternalPortal.ViewModels
     {
         public string ApplicationId { get; set; }
         public string Reference { get; set; }
-        public Enum Status { get; set; }
+        public ApplicationStatus Status { get; set; }
         public StageOneDetails StageOneDetails { get; set; }
         public StageTwoDetails StageTwoDetails { get; set; }
         public OrganisationDetails OrganisationDetails { get; set; }
